@@ -14,10 +14,11 @@
       });
     });
 
-    // RECEPTOR SEGURO: Escucha cuando el cliente presiona el botón dentro de la Web App de Google
+    // RECEPTOR REPARADO: Escucha cuando el cliente presiona el botón dentro de la Web App de Google
     window.addEventListener("message", function(event) {
-      // Por estricta seguridad, verificamos que el mensaje provenga de los servidores de Google Apps Script
-      if (!event.origin.includes("script.google.com")) return;
+      // CORRECCIÓN: Validamos que provenga de los servidores oficiales de ejecución o contenido de Google
+      var esOrigenGoogle = event.origin.includes("script.google.com") || event.origin.includes("googleusercontent.com");
+      if (!esOrigenGoogle) return;
       
       // Si el mensaje recibido es la orden de vinculación con el DNI
       if (event.data && event.data.tipo === "VINCULAR_ONESIGNAL") {
