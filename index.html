@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Puntos Gasolinera DONHÉCTOR</title>
   
-  <!-- CÓDIGO DE ONESIGNAL INICIO -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
     window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -14,9 +13,24 @@
         appId: "aaec0c39-db80-4072-9e50-88208168eb53",
       });
     });
-  </script>
-  <!-- CÓDIGO DE ONESIGNAL FIN -->
 
+    // RECEPTOR SEGURO: Escucha cuando el cliente presiona el botón dentro de la Web App de Google
+    window.addEventListener("message", function(event) {
+      // Por estricta seguridad, verificamos que el mensaje provenga de los servidores de Google Apps Script
+      if (!event.origin.includes("script.google.com")) return;
+      
+      // Si el mensaje recibido es la orden de vinculación con el DNI
+      if (event.data && event.data.tipo === "VINCULAR_ONESIGNAL") {
+        var dniCliente = event.data.dni;
+        
+        // Le ordenamos a OneSignal amarrar este navegador/celular con el DNI del cliente real
+        window.OneSignalDeferred.push(async function(OneSignal) {
+          await OneSignal.login(dniCliente);
+          console.log("Dispositivo vinculado con éxito al DNI en OneSignal: " + dniCliente);
+        });
+      }
+    }, false);
+  </script>
   <style>
     html, body {
       margin: 0;
